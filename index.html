@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>升级 AI 极简翻译 Pro</title>
+    <!-- 网页标签图标 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
@@ -11,8 +12,10 @@
         h3 { margin-top: 0; color: #1e293b; }
         .price { font-size: 36px; font-weight: 800; color: #0f172a; margin: 10px 0; letter-spacing: -1px; }
         .price span { font-size: 16px; font-weight: normal; color: #64748b; }
-        /* 这里的图片路径使用了相对路径 */
+        
+        /* 收款码样式 */
         .qr-code { width: 220px; height: 220px; margin: 15px auto; border: 1px solid #e2e8f0; border-radius: 12px; display: block; }
+        
         .tips { font-size: 13px; color: #475569; background: #f8fafc; padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 20px; line-height: 1.6; border: 1px solid #e2e8f0; }
         .input-group { margin-bottom: 12px; }
         input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; outline: none; transition: border 0.2s; }
@@ -27,7 +30,8 @@
         <h3>订阅 Pro 会员 (月付)</h3>
         <div class="price">¥ 19.90 <span>/月</span></div>
         
-        <!-- 核心点：这里直接引用同目录下的图片 -->
+        <!-- 【修改点 1】确认你的收款码图片文件名，必须和仓库里的一样 -->
+        <!-- 如果你上传的是 qrcode.png，这里就改 .png -->
         <img src="./qrcode.jpg" class="qr-code" alt="微信支付收款码">
         
         <div class="tips">
@@ -61,9 +65,9 @@
             btn.disabled = true;
             btn.textContent = "提交中...";
 
-            // ★★★ 请将下面的 URL 换成你腾讯云函数的【访问服务默认域名】 ★★★
-            // 格式通常是：https://你的函数ID.ap-shanghai.app.tcloudbase.com/proxy
-            const CLOUD_URL = "https://你的腾讯云函数域名/proxy";
+            // 【修改点 2】替换成你的腾讯云函数地址
+            // 去腾讯云云函数 -> proxy -> 概览 -> 访问服务 -> 复制那个“默认域名”
+            const CLOUD_URL = "https://你的函数ID.ap-shanghai.app.tcloudbase.com/proxy";
 
             fetch(`${CLOUD_URL}?action=submit_order`, {
                 method: 'POST',
