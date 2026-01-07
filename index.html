@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>升级 AI 极简翻译 Pro</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; width: 90%; max-width: 360px; padding: 25px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); text-align: center; }
+        h3 { margin-top: 0; color: #1e293b; }
+        .price { font-size: 36px; font-weight: 800; color: #0f172a; margin: 10px 0; letter-spacing: -1px; }
+        .price span { font-size: 16px; font-weight: normal; color: #64748b; }
+        /* 这里的图片路径使用了相对路径 */
+        .qr-code { width: 220px; height: 220px; margin: 15px auto; border: 1px solid #e2e8f0; border-radius: 12px; display: block; }
+        .tips { font-size: 13px; color: #475569; background: #f8fafc; padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 20px; line-height: 1.6; border: 1px solid #e2e8f0; }
+        .input-group { margin-bottom: 12px; }
+        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; outline: none; transition: border 0.2s; }
+        input:focus { border-color: #2563eb; ring: 2px solid #2563eb; }
+        button { width: 100%; padding: 14px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #1d4ed8; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>订阅 Pro 会员 (月付)</h3>
+        <div class="price">¥ 19.90 <span>/月</span></div>
+        
+        <!-- 核心点：这里直接引用同目录下的图片 -->
+        <img src="./qrcode.jpg" class="qr-code" alt="微信支付收款码">
+        
+        <div class="tips">
+            <strong>🚀 支付步骤：</strong><br>
+            1. 截屏或长按识别上方二维码支付。<br>
+            2. 支付成功后，填写下方信息。<br>
+            3. 激活码将在 24小时内 发送到您的邮箱。
+        </div>
+
+        <div class="input-group">
+            <input type="email" id="email" placeholder="接收激活码的邮箱 (必填)">
+        </div>
+        <div class="input-group">
+            <input type="text" id="transId" placeholder="微信支付单号后4位 (必填)">
+        </div>
+        
+        <button id="submitBtn" onclick="submitOrder()">我已支付，提交审核</button>
+        <p id="msg" style="font-size:12px; color:#16a34a; display:none; margin-top:10px;"></p>
+    </div>
+
+    <script>
+        function submitOrder() {
+            const email = document.getElementById('email').value.trim();
+            const transId = document.getElementById('transId').value.trim();
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('msg');
+
+            if(!email || !transId) { alert("请填写完整邮箱和单号"); return; }
+            if(!email.includes('@')) { alert("邮箱格式不正确"); return; }
+
+            btn.disabled = true;
+            btn.textContent = "提交中...";
+
+            // ★★★ 请将下面的 URL 换成你腾讯云函数的【访问服务默认域名】 ★★★
+            // 格式通常是：https://你的函数ID.ap-shanghai.app.tcloudbase.com/proxy
+            const CLOUD_URL = "https://你的腾讯云函数域名/proxy";
+
+            fetch(`${CLOUD_URL}?action=submit_order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, transId, type: 'monthly' })
+            }).then(res => {
+                if (res.ok) {
+                    btn.style.display = 'none';
+                    msg.style.display = 'block';
+                    msg.innerHTML = "✅ 提交成功！<br>请留意邮箱，激活码稍后发送。";
+                } else {
+                    throw new Error('网络错误');
+                }
+            }).catch(err => {
+                btn.disabled = false;
+                btn.textContent = "重试";
+                alert("提交失败，请检查网络或直接联系作者。");
+            });
+        }
+    </script>
+</body>
+</html>
